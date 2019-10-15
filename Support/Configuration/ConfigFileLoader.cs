@@ -11,6 +11,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
     public class ConfigFileLoader<TResourceLocator>
     {
         private System.Configuration.Configuration configuration;
+        private string configFileName;
 
         public ConfigFileLoader(string configFileName)
         {
@@ -21,7 +22,15 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
         public TSection GetSection<TSection>(string sectionName)
             where TSection : ConfigurationSection
         {
-            return (TSection)configuration.GetSection(sectionName);
+            try
+            {
+                return (TSection)configuration.GetSection(sectionName);
+            }
+            finally
+            {
+                if (File.Exists(configFileName)) File.Delete(configFileName);
+            }
+            
         }
 
         private void LoadConfigFromFile(string configFileName)
@@ -37,6 +46,8 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
                 };
 
             configuration = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
+
+            this.configFileName = configFileName;
         }
 
         private static void DumpResourceFileToDisk(string configFileName)
@@ -80,5 +91,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
                 numRead = inputStream.Read(buffer, 0, buffer.Length);
             }
         }
+
+        ~ConfigFileLoader() { if (File.Exists(configFileName)) File.Delete(configFileName); }
     }
 }
