@@ -96,6 +96,11 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
+    <None Include="configFiles\Lifetimes.config" />
+    <None Include="configFiles\SectionExtensions.config" />
+    <EmbeddedResource Include="configFiles\unity.config" />
+    <EmbeddedResource Include="configFiles\unity.generic.config" />
+    <EmbeddedResource Include="configFiles\VariousConstructors.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
