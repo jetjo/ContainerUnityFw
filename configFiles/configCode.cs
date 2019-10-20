@@ -15,7 +15,7 @@ using Unity.Configuration;
 using Microsoft.Practices.Unity.GuardSupport;
 using Microsoft.Practices.Unity.GuardSupport.Configuration;
 
-namespace ConsoleApp1
+namespace UnityContainerr
 {
 
     using Microsoft.Practices.Unity.Configuration.Tests.TestObjects;
@@ -57,15 +57,16 @@ namespace ConsoleApp1
         }
     }
 
-    class Program
+    public class ContainerFactory
     {
         static void Main(string[] args)
         {
-            ContainerConfigurationTest1();
+            ContainerConfiguration<ContainerFactory>();
         }
 
-        [TestMethod]
-        public static void ContainerConfigurationTest1()
+        //[TestMethod]
+        public static IUnityContainer ContainerConfiguration<TResourceLocator>(string unityConfigFileName="unity.config",string unitySectionName="unity"
+            ,string unityContainerName="unityContainer")
         {
             IUnityContainer unityContainer = new UnityContainer();
 
@@ -86,7 +87,7 @@ namespace ConsoleApp1
 
             //UnityConfigurationSection unityConfigurationSection = (UnityConfigurationSection)configuration.GetSection("unity");
 
-            var loader = new ConfigFileLoader<Program>("unity");
+            var loader = new ConfigFileLoader<ContainerFactory>("unity");
             UnityConfigurationSection unityConfigurationSection = loader.GetSection<UnityConfigurationSection>("unity");
 
             //载入名称为FirstClass 的container节点
@@ -155,23 +156,25 @@ namespace ConsoleApp1
             #region unity.generic.config
 
 
-            var loader = new ConfigFileLoader<Program>("unity.generic");
-            UnityConfigurationSection unityConfigurationSection = loader.GetSection<UnityConfigurationSection>("unity");
+            var loader = new ConfigFileLoader<TResourceLocator>(unityConfigFileName);
+            UnityConfigurationSection unityConfigurationSection = loader.GetSection<UnityConfigurationSection>(unitySectionName);
 
             //载入名称为FirstClass 的container节点
-            unityContainer.LoadConfiguration(unityConfigurationSection, "container1");
+            unityContainer.LoadConfiguration(unityConfigurationSection, unityContainerName);
 
-            var hh = unityContainer.Resolve<ItemsCollection<IItem>>("ThroughConstructorWithSpecificElements");
+            //var hh = unityContainer.Resolve<ItemsCollection<IItem>>("ThroughConstructorWithSpecificElements");
             #endregion
 
-            Console.ReadLine();
+            //Console.ReadLine();
+
+            return unityContainer;
         }
     }
 }
 
 namespace Microsoft.Practices.Unity.Configuration.Tests.TestObjects
 {
-    using ConsoleApp1;
+    using UnityContainerr;
 
     public class ArrayDependencyObject<T>
     {
