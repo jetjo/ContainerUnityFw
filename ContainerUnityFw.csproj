@@ -102,7 +102,6 @@
     <EmbeddedResource Include="configFiles\unity.config" />
     <EmbeddedResource Include="configFiles\unity.generic.config" />
     <EmbeddedResource Include="configFiles\VariousConstructors.config" />
-    <EmbeddedResource Include="configFiles\OrmContainer.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

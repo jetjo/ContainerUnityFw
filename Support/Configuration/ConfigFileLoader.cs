@@ -11,7 +11,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
     public class ConfigFileLoader<TResourceLocator>
     {
         private System.Configuration.Configuration configuration;
-        private string configFileName;
+        private string ConfigFileDir_Abs_;
 
         public ConfigFileLoader(string configFileName)
         {
@@ -24,30 +24,34 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
         {
             try
             {
+                if (!File.Exists(ConfigFileDir_Abs_)) throw new FileNotFoundException("",this.ConfigFileDir_Abs_);
                 return (TSection)configuration.GetSection(sectionName);
             }
             finally
             {
-                if (File.Exists(configFileName)) File.Delete(configFileName);
+                if (File.Exists(ConfigFileDir_Abs_)) File.Delete(ConfigFileDir_Abs_);
             }
-            
+
         }
 
         private void LoadConfigFromFile(string configFileName)
         {
-            if (!configFileName.EndsWith(".config"))
+            /*if (!configFileName.EndsWith(".config"))
             {
                 configFileName += ".config";
             }
-
             var fileMap = new ExeConfigurationFileMap
-                {
-                    ExeConfigFilename = configFileName
-                };
+            {
+                ExeConfigFilename = configFileName
+        };*/
 
-            configuration = ConfigurationManager.OpenMappedExeConfiguration(fileMap, ConfigurationUserLevel.None);
+            this.ConfigFileDir_Abs_ = GetConfigFileDir_Abs_(configFileName);
+            if (!File.Exists(ConfigFileDir_Abs_)) throw new FileNotFoundException("", this.ConfigFileDir_Abs_);
+            configuration = ConfigurationManager.OpenMappedExeConfiguration(new ExeConfigurationFileMap
+            {
+                ExeConfigFilename = this.ConfigFileDir_Abs_
+            }, ConfigurationUserLevel.None);
 
-            this.configFileName = configFileName;
         }
 
         private static void DumpResourceFileToDisk(string configFileName)
@@ -61,9 +65,9 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
 
         private static Stream GetResourceStream(string configFileName)
         {
-            var name = configFileName + ".config";
+            //var name = configFileName + ".config";
             var currentAssembly = typeof(TResourceLocator).Assembly;
-            string resourceName = currentAssembly.GetManifestResourceNames().First(it => it.EndsWith(name));
+            string resourceName = currentAssembly.GetManifestResourceNames().First(it => it.EndsWith(configFileName));
 
             return currentAssembly.GetManifestResourceStream(resourceName);
         }
@@ -73,12 +77,15 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
             return typeof(TResourceLocator).Namespace;
         }
 
-        private static Stream GetOutputStream(string configFileName)
+        private static string GetConfigFileDir_Abs_(string configFileName)
         {
             string configFileDir = AppDomain.CurrentDomain.BaseDirectory;
-            string configFilePath = Path.Combine(configFileDir, configFileName + ".config");
+            return Path.Combine(configFileDir, configFileName);// + ".config");
+        }
 
-            return new FileStream(configFilePath, FileMode.Create, FileAccess.Write);
+        private static Stream GetOutputStream(string configFileName)
+        {
+            return new FileStream(GetConfigFileDir_Abs_(configFileName), FileMode.Create, FileAccess.Write);
         }
 
         private static void CopyStream(Stream inputStream, Stream outputStream)
@@ -92,6 +99,6 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
             }
         }
 
-        ~ConfigFileLoader() { if (File.Exists(configFileName)) File.Delete(configFileName); }
+        ~ConfigFileLoader() { if (File.Exists(ConfigFileDir_Abs_)) File.Delete(ConfigFileDir_Abs_); }
     }
 }

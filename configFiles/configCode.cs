@@ -17,60 +17,13 @@ using Microsoft.Practices.Unity.GuardSupport.Configuration;
 
 namespace UnityContainerr
 {
-
-    using Microsoft.Practices.Unity.Configuration.Tests.TestObjects;
-    using Microsoft.VisualStudio.TestTools.UnitTesting;
-    using Unity.Injection;
-    using Microsoft.Practices.Unity.Configuration.Tests.TestObjects.MyGenericTypes;
-
-    /// <summary>
-    /// 班级接口
-    /// </summary>
-    public interface IClass
+    public abstract class ContainerFactory
     {
-        string ClassName { get; set; }
-
-        void ShowInfo();
-    }
-    /// <summary>
-    /// 计科班
-    /// </summary>
-    public class CbClass : IClass
-    {
-        public string ClassName { get; set; }
-
-        public void ShowInfo()
-        {
-            Console.WriteLine("计科班：{0}", ClassName);
-        }
-    }
-    /// <summary>
-    /// 电商班
-    /// </summary>
-    public class EcClass : IClass
-    {
-        public string ClassName { get; set; }
-
-        public void ShowInfo()
-        {
-            Console.WriteLine("电商班：{0}", ClassName);
-        }
-    }
-
-    public class ContainerFactory
-    {
-        static void Main(string[] args)
-        {
-            ContainerConfiguration<ContainerFactory>();
-        }
-
-        //[TestMethod]
         public static IUnityContainer ContainerConfiguration<TResourceLocator>(string unityConfigFileName="unity.config",string unitySectionName="unity"
-            ,string unityContainerName="unityContainer")
+            ,string unityContainerName="unity")
         {
-            IUnityContainer unityContainer = new UnityContainer();
 
-            #region unity.config
+            #region //unity.config
 
             /*
             //string configFile = "unity.config";
@@ -153,21 +106,64 @@ namespace UnityContainerr
     */
             #endregion
 
-            #region unity.generic.config
+            #region unity.config
 
+            IUnityContainer unity = new UnityContainer();
 
             var loader = new ConfigFileLoader<TResourceLocator>(unityConfigFileName);
             UnityConfigurationSection unityConfigurationSection = loader.GetSection<UnityConfigurationSection>(unitySectionName);
 
             //载入名称为FirstClass 的container节点
-            unityContainer.LoadConfiguration(unityConfigurationSection, unityContainerName);
+            unity.LoadConfiguration(unityConfigurationSection, unityContainerName);
 
             //var hh = unityContainer.Resolve<ItemsCollection<IItem>>("ThroughConstructorWithSpecificElements");
             #endregion
 
-            //Console.ReadLine();
+            return unity;
+        }
+    }
+}
 
-            return unityContainer;
+/*
+namespace UnityContainerr
+{
+
+    using Microsoft.Practices.Unity.Configuration.Tests.TestObjects;
+    using Microsoft.VisualStudio.TestTools.UnitTesting;
+    using Unity.Injection;
+    using Microsoft.Practices.Unity.Configuration.Tests.TestObjects.MyGenericTypes;
+
+    /// <summary>
+    /// 班级接口
+    /// </summary>
+    public interface IClass
+    {
+        string ClassName { get; set; }
+
+        void ShowInfo();
+    }
+    /// <summary>
+    /// 计科班
+    /// </summary>
+    public class CbClass : IClass
+    {
+        public string ClassName { get; set; }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine("计科班：{0}", ClassName);
+        }
+    }
+    /// <summary>
+    /// 电商班
+    /// </summary>
+    public class EcClass : IClass
+    {
+        public string ClassName { get; set; }
+
+        public void ShowInfo()
+        {
+            Console.WriteLine("电商班：{0}", ClassName);
         }
     }
 }
@@ -307,10 +303,11 @@ namespace Microsoft.Practices.Unity.Configuration.Tests.TestObjects.MyGenericTyp
 
         public string ServiceStatus
         {
-            get { return String.Format("Available for type: {0}", this.status/*typeof(T)*/); }
+            get { return String.Format("Available for type: {0}", this.status/*typeof(T)/); }
         }
 
         #endregion
     }
 }
 
+*/
