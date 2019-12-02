@@ -64,14 +64,12 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="configFiles\configCode.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Support\AssertExtensions.cs" />
     <Compile Include="Support\AssertHelper.cs" />
     <Compile Include="Support\CollectionAssertExtensions.cs" />
     <Compile Include="Support\Configuration\ConfigFileLoader.cs" />
     <Compile Include="Support\Configuration\ConfigSerializer.cs" />
-    <Compile Include="Support\Configuration\ContainerConfiguringFixture.cs" />
     <Compile Include="Support\Configuration\SectionLoadingFixture.cs" />
     <Compile Include="Support\EnumerableAssertionExtensions.cs" />
     <Compile Include="Support\EnumerableExtensions.cs" />
@@ -97,11 +95,10 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
-    <EmbeddedResource Include="configFiles\Lifetimes.config" />
-    <EmbeddedResource Include="configFiles\SectionExtensions.config" />
-    <EmbeddedResource Include="configFiles\unity.config" />
-    <EmbeddedResource Include="configFiles\unity.generic.config" />
-    <EmbeddedResource Include="configFiles\VariousConstructors.config" />
+    <EmbeddedResource Include="UnityConfig.example\Lifetimes.config" />
+    <EmbeddedResource Include="UnityConfig.example\SectionExtensions.config" />
+    <EmbeddedResource Include="UnityConfig.example\unity.config" />
+    <EmbeddedResource Include="UnityConfig.example\unity.generic.config" />
     <None Include="packages.config" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
