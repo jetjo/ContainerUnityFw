@@ -15,6 +15,8 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
 
         public ConfigFileLoader(string configFileName)
         {
+            string configFileDir = AppDomain.CurrentDomain.BaseDirectory;
+            this.ConfigFileDir_Abs_= Path.Combine(configFileDir, configFileName);// + ".config");
             DumpResourceFileToDisk(configFileName);
             LoadConfigFromFile(configFileName);
         }
@@ -45,7 +47,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
                 ExeConfigFilename = configFileName
         };*/
 
-            this.ConfigFileDir_Abs_ = GetConfigFileDir_Abs_(configFileName);
+            //this.ConfigFileDir_Abs_ = GetConfigFileDir_Abs_(configFileName);
             if (!File.Exists(ConfigFileDir_Abs_)) throw new FileNotFoundException("", this.ConfigFileDir_Abs_);
             configuration = ConfigurationManager.OpenMappedExeConfiguration(new ExeConfigurationFileMap
             {
@@ -54,7 +56,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
 
         }
 
-        private static void DumpResourceFileToDisk(string configFileName)
+        private void DumpResourceFileToDisk(string configFileName)
         {
             using (Stream resourceStream = GetResourceStream(configFileName))
             using (Stream outputStream = GetOutputStream(configFileName))
@@ -77,15 +79,9 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
             return typeof(TResourceLocator).Namespace;
         }
 
-        private static string GetConfigFileDir_Abs_(string configFileName)
+        private Stream GetOutputStream(string configFileName)
         {
-            string configFileDir = AppDomain.CurrentDomain.BaseDirectory;
-            return Path.Combine(configFileDir, configFileName);// + ".config");
-        }
-
-        private static Stream GetOutputStream(string configFileName)
-        {
-            return new FileStream(GetConfigFileDir_Abs_(configFileName), FileMode.Create, FileAccess.Write);
+            return new FileStream(ConfigFileDir_Abs_, FileMode.Create, FileAccess.Write);
         }
 
         private static void CopyStream(Stream inputStream, Stream outputStream)

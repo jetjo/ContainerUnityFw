@@ -10,10 +10,12 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
     public class ConfigSerializer
     {
         private readonly string filename;
+        private readonly string configFileDir;
 
         public ConfigSerializer(string filename)
         {
             this.filename = filename;
+            this.configFileDir = AppDomain.CurrentDomain.BaseDirectory;
         }
 
         public void Save(string sectionName, ConfigurationSection section)
@@ -43,7 +45,7 @@ namespace Microsoft.Practices.Unity.GuardSupport.Configuration
 
         private void DeleteFileIfExists()
         {
-            string fullName = Path.Combine(AppDomain.CurrentDomain.BaseDirectory, filename);
+            string fullName = Path.Combine(this.configFileDir, filename);
             File.Delete(fullName);
         }
     }
